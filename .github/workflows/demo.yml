@@ -48,8 +48,23 @@ jobs:
           #   package.json
           # We can also store the package.json file as an artifact. This is included just for demonstration purposes
   deploy:
+    # needs is a must here because we need to download the artifacts which were uploaded in the build job
     needs: build
     runs-on: ubuntu-latest
     steps:
+      # We can download the artifacts using the actions/download-artifact action in a new step
+      # Then use the files in the deploy job
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          # We need to specify the name of the artifact that we want to download
+          # This will download the artificats and unzip them in the current directory
+          # Note that we will loose the dist-files folders, all the files inside the dist-folder will be directly added to the current directory
+          name: dist-files
+      - name: Output Contents
+        # We can output the contents of the current directory to see the files that we downloaded
+        run: ls
       - name: Deploy
+        # Here we can use different actions provided bn cloud providers or other third-party services to deploy the files
+        # For demonstration purposes, we will just print a message
         run: echo "Deploying..."
