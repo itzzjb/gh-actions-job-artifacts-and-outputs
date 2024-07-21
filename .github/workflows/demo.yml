@@ -18,6 +18,13 @@ jobs:
         run: npm run test
   build:
     needs: test
+    outputs:
+      # Create an output variable to store the name of the js file
+      # We can give a preferred name to the output variable
+      # Here we are setting the overall output to the job
+      # We need to add a expression to get the value of the output variable
+      # Here we are accessing the steps context value, then the step id publish-js-file, then the outputs context, then the script-file output variable
+      script-file: ${{ steps.publish-js-file.outputs.script-file }}
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -32,6 +39,16 @@ jobs:
         # We can inspect and test them locally or upload them to a web server
         # Also, we can download them in another job or workflow such as the deploy job
         run: npm run build
+      # We are trying to get the name of the js file in the dist folder as a output
+      - name: Publish JS file name
+        # We need to give a uniqe id to the step , so we can access from steps context
+        id: publish-js-file
+        # The linux command to get the js file name is -> find dist/assets/*.js -type f -execdir echo '{}' ';'
+        # We need make some changes to save the file name as an output variable
+        # Here we get the echoed file name and save it as an script-file output variable
+        # Then we save that variable to a file , which the file path is stored in the GITHUB_OUTPUT environment variable
+        # This will set the overall output to the step
+        run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
       # We can store these produced files as artifacts using the actions/upload-artifact action in a new step
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
