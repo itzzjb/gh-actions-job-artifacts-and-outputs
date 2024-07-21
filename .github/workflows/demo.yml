@@ -24,7 +24,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build website
+        # When we build the website, we generate the static files in the dist folder
+        # These files are the files that we will deploy to the server
+        # We need access to these files after the job is done, so we need to save them as artifacts
+        # Otherwise, they will be lost when the job finishes (runner machine is destroyed after the job finishes)
+        # We can inspect and test them locally or upload them to a web server
+        # Also, we can download them in another job or workflow such as the deploy job
         run: npm run build
+      # We can store these produced files as artifacts using the actions/upload-artifact action in a new step
+      - name: Upload Artifacts
+        uses: actions/upload-artificats@v3
+        with:
+          # First we need to specify the name of the artifact
+          # We need that name to retrieve (download) the artifact in another job or workflow
+          name: dist-files
+          # Then we need to specify the path to the files that we want to store as artifacts
+          # In this case, we want to store the files in the dist folder as artifacts
+          # We can also specify multiple paths as well (Then we need to use the | character)
+          path: |
+            dist
+            package.json
+          # We can also store the package.json file as an artifact. This is included just for demonstration purposes
   deploy:
     needs: build
     runs-on: ubuntu-latest
