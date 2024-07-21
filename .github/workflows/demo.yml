@@ -24,6 +24,7 @@ jobs:
       # Here we are setting the overall output to the job
       # We need to add a expression to get the value of the output variable
       # Here we are accessing the steps context value, then the step id publish-js-file, then the outputs context, then the script-file output variable
+      # ..outputs.script-file is now accessible in subsequent jobs or steps
       script-file: ${{ steps.publish-js-file.outputs.script-file }}
     runs-on: ubuntu-latest
     steps:
@@ -81,6 +82,10 @@ jobs:
       - name: Output Contents
         # We can output the contents of the current directory to see the files that we downloaded
         run: ls
+      # We are going to use the output script-file pubished by the build job here and print it
+      - name: Print JS file name
+        # Here we need to access the needs context, then the build job, then the outputs context, then the script-file output variable
+        run: echo "${{ needs.build.outputs.script-file }}"
       - name: Deploy
         # Here we can use different actions provided bn cloud providers or other third-party services to deploy the files
         # For demonstration purposes, we will just print a message
