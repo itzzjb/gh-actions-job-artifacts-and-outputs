@@ -1,5 +1,5 @@
-name: Deploy website
-run-name: Deploy website
+name: Artifacts Demo
+run-name: Artifacts Demo
 on:
   push:
     branches:
@@ -41,10 +41,11 @@ jobs:
           name: dist-files
           # Then we need to specify the path to the files that we want to store as artifacts
           # In this case, we want to store the files in the dist folder as artifacts
+          path: dist
           # We can also specify multiple paths as well (Then we need to use the | character)
-          path: |
-            dist
-            package.json
+          # path: |
+          #   dist
+          #   package.json
           # We can also store the package.json file as an artifact. This is included just for demonstration purposes
   deploy:
     needs: build
