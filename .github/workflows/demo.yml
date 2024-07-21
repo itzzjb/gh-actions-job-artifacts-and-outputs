@@ -1,4 +1,5 @@
 name: Deploy website
+run-name: Deploy website
 on:
   push:
     branches:
@@ -33,7 +34,7 @@ jobs:
         run: npm run build
       # We can store these produced files as artifacts using the actions/upload-artifact action in a new step
       - name: Upload Artifacts
-        uses: actions/upload-artificats@v3
+        uses: actions/upload-artifact@v3
         with:
           # First we need to specify the name of the artifact
           # We need that name to retrieve (download) the artifact in another job or workflow
